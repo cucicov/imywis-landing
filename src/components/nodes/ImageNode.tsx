@@ -3,7 +3,6 @@ import {useCallback, useRef, useState, type ChangeEvent, type CSSProperties, typ
 import {updateNodeAndPropagate} from "../../utils/nodeUtils.ts";
 import {NODE_TYPES, type ImageNodeData} from '../../types/nodeTypes';
 import { HandleTypes } from '../../types/handleTypes';
-import {APP_CONFIG} from '../../config/appConfig.ts';
 import CumulativeCenterSlider from '../CumulativeCenterSlider.tsx';
 import {saveLocalImageDataUrl} from '../../utils/localImageCache.ts';
 
@@ -216,20 +215,6 @@ const ImageNode = ({ id, data }: NodeProps<Node<ImageNodeData, typeof NODE_TYPES
         setNodes((nds) => updateNodeAndPropagate(nds, edges, id, field, Math.round(nextValue)));
     }, [getEdges, id, setNodes]);
 
-    const onToggleFields = useCallback(() => {
-        setNodes((nds) => nds.map((node) => (
-            node.id === id
-                ? {
-                    ...node,
-                    data: {
-                        ...node.data,
-                        collapsed: fieldsExpanded,
-                    },
-                }
-                : node
-        )));
-    }, [fieldsExpanded, id, setNodes]);
-
     return (
         <div
             className={`imywis-node-shell${data.connectionImpactKey ? ' imywis-node-shell--impact' : ''}`}
@@ -356,22 +341,6 @@ const ImageNode = ({ id, data }: NodeProps<Node<ImageNodeData, typeof NODE_TYPES
                     />
                 </div>
             )}
-            <div
-                className="nodrag"
-                onClick={onToggleFields}
-                style={{
-                    marginTop: '6px',
-                    color: '#fff',
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                }}
-            >
-                <span>{fieldsExpanded ? '▼' : '▶'}</span>
-                <b>{data.label + "-" + id}</b>
-            </div>
 
             {fieldsExpanded && (
                 <>

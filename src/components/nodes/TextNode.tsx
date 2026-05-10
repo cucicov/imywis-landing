@@ -77,20 +77,6 @@ const TextNode = ({id, data}: NodeProps<Node<TextNodeData, typeof NODE_TYPES.TEX
         });
     }, [getEdges, id, setNodes]);
 
-    const onToggleFields = useCallback(() => {
-        setNodes((nds) => nds.map((node) => (
-            node.id === id
-                ? {
-                    ...node,
-                    data: {
-                        ...node.data,
-                        collapsed: fieldsExpanded,
-                    },
-                }
-                : node
-        )));
-    }, [fieldsExpanded, id, setNodes]);
-
     return (
         <div
             className={`imywis-node-shell${data.connectionImpactKey ? ' imywis-node-shell--impact' : ''}`}
@@ -180,22 +166,6 @@ const TextNode = ({id, data}: NodeProps<Node<TextNodeData, typeof NODE_TYPES.TEX
                         }}
                     />
                 </div>
-            </div>
-            <div
-                className="nodrag"
-                onClick={onToggleFields}
-                style={{
-                    marginTop: '6px',
-                    color: '#fff',
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                }}
-            >
-                <span>{fieldsExpanded ? '▼' : '▶'}</span>
-                <b>{data.label + '-' + id}</b>
             </div>
             {fieldsExpanded && (
                 <>

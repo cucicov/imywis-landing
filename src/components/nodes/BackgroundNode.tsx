@@ -81,20 +81,6 @@ const BackgroundNode = ({id, data}: NodeProps<Node<BackgroundNodeData, typeof NO
         setNodes((nds) => updateNodeAndPropagate(nds, edges, id, field, Math.round(nextValue)));
     }, [getEdges, id, setNodes]);
 
-    const onToggleFields = useCallback(() => {
-        setNodes((nds) => nds.map((node) => (
-            node.id === id
-                ? {
-                    ...node,
-                    data: {
-                        ...node.data,
-                        collapsed: fieldsExpanded,
-                    },
-                }
-                : node
-        )));
-    }, [fieldsExpanded, id, setNodes]);
-
     return (
         <div
             className={`imywis-node-shell${data.connectionImpactKey ? ' imywis-node-shell--impact' : ''}`}
@@ -131,22 +117,6 @@ const BackgroundNode = ({id, data}: NodeProps<Node<BackgroundNodeData, typeof NO
                 }}
             />
 
-            <div
-                className="nodrag"
-                onClick={onToggleFields}
-                style={{
-                    marginTop: '6px',
-                    color: '#fff',
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                }}
-            >
-                <span>{fieldsExpanded ? '▼' : '▶'}</span>
-                <b>{data.label + '-' + id}</b>
-            </div>
             {fieldsExpanded && (
                 <>
                     <div style={{display: 'flex', flexDirection: 'column', gap: '7px', marginTop: '6px'}}>

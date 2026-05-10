@@ -12,27 +12,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import '@xyflow/react/dist/style.css';
 import PageNode from './nodes/PageNode.tsx';
-import AddPageNodeButton from './nodes/buttons/AddPageNodeButton.tsx';
-import AddImageNodeButton from "./nodes/buttons/AddImageNodeButton.tsx";
 import ImageNode from "./nodes/ImageNode.tsx";
-import NodeStateTransfer from "./nodes/NodeStateTransfer.tsx";
 import type {PageNodeData} from "../types/nodeTypes.ts";
 import {syncNodesFromEdges} from "../utils/nodeUtils.ts";
 import {NODE_TYPES} from '../types/nodeTypes';
 import {CONNECTION_RULES} from "../types/handleTypes.ts";
 import P5Preview from './P5Preview.tsx';
 import BackgroundNode from './nodes/BackgroundNode.tsx';
-import AddBackgroundNodeButton from './nodes/buttons/AddBackgroundNodeButton.tsx';
 import {toNumberOrNull} from '../utils/numberUtils.ts';
 import TextNode from './nodes/TextNode.tsx';
-import AddTextNodeButton from './nodes/buttons/AddTextNodeButton.tsx';
 import EventNode from './nodes/EventNode.tsx';
-import AddEventNodeButton from './nodes/buttons/AddEventNodeButton.tsx';
 import ExternalLinkNode from './nodes/ExternalLinkNode.tsx';
-import AddExternalLinkNodeButton from './nodes/buttons/AddExternalLinkNodeButton.tsx';
-import LatestSelectedPageNameBadge from './nodes/buttons/LatestSelectedPageNameBadge.tsx';
 import {
-  getLatestSelectedPageNameFromSession,
   setLatestSelectedPageNameInSession,
 } from '../utils/sessionStorage.ts';
 import { loadDefaultProject } from '../utils/projectLoader.ts';
@@ -61,9 +52,6 @@ type NodeDataWithMetadata = {
 const FlowCanvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [animationsEnabled, setAnimationsEnabled] = useState(true);
-  const [previewEnabled, setPreviewEnabled] = useState(true);
-  const [latestSelectedPageName, setLatestSelectedPageName] = useState(() => getLatestSelectedPageNameFromSession());
   const previousMetadataSignatureByNodeIdRef = useRef<Map<string, string>>(new Map());
   const [viewportSize, setViewportSize] = useState(() => ({
     width: window.innerWidth,
@@ -78,7 +66,6 @@ const FlowCanvas = () => {
 
     const pageData = node.data as PageNodeData | undefined;
     const nextPageName = resolveSelectedPageName(pageData?.name);
-    setLatestSelectedPageName(nextPageName);
     setLatestSelectedPageNameInSession(nextPageName);
   }, []);
 
@@ -130,28 +117,6 @@ const FlowCanvas = () => {
 
   // Trigger impact animation whenever a node metadata payload changes
   useEffect(() => {
-    if (!animationsEnabled) {
-      setNodes((currentNodes) => {
-        let hasChanges = false;
-        const nextNodes = currentNodes.map((node) => {
-          if (!node.data.connectionImpactKey) {
-            return node;
-          }
-
-          hasChanges = true;
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              connectionImpactKey: undefined,
-            },
-          };
-        });
-
-        return hasChanges ? nextNodes : currentNodes;
-      });
-      return;
-    }
 
     const currentSignatures = new Map<string, string>();
     const impactedNodeIds: string[] = [];
@@ -209,7 +174,7 @@ const FlowCanvas = () => {
         };
       }));
     }, 520);
-  }, [animationsEnabled, nodes, setNodes]);
+  }, [nodes, setNodes]);
 
   useEffect(() => {
     const updateViewportSize = () => {
@@ -297,7 +262,7 @@ const FlowCanvas = () => {
   return (
     <div
       id="imywis-flow-scroll-container"
-      className={animationsEnabled ? undefined : 'imywis-animations-disabled'}
+      className={'imywis-animations-disabled'}
       style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'auto' }}
     >
       <div
@@ -342,7 +307,7 @@ const FlowCanvas = () => {
           fitView
           style={{ width: '100%', height: '100%' }}
         >
-          {previewEnabled ? <P5Preview nodes={nodes} /> : null}
+          <P5Preview nodes={nodes} />
           {/*<NodeStateTransfer />*/}
           {/*<AddPageNodeButton />*/}
           {/*<AddImageNodeButton />*/}

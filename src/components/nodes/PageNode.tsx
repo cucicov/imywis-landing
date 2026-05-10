@@ -1,9 +1,8 @@
 import {Handle, Position, useReactFlow, type Node, type NodeProps} from '@xyflow/react';
-import {useCallback, useState, type ChangeEvent} from 'react';
+import {useCallback, type ChangeEvent} from 'react';
 import {updateNodeAndPropagate} from "../../utils/nodeUtils.ts";
 import {NODE_TYPES, type PageNodeData} from '../../types/nodeTypes';
 import { HandleTypes } from '../../types/handleTypes';
-import {APP_CONFIG} from '../../config/appConfig.ts';
 import CumulativeCenterSlider from "../CumulativeCenterSlider.tsx";
 
 const labelStyle = { fontSize: '10px', color: '#57212E', whiteSpace: 'nowrap' } as const;
@@ -38,20 +37,6 @@ const PageNode = ({ id, data }: NodeProps<Node<PageNodeData, typeof NODE_TYPES.P
         const edges = getEdges();
         setNodes((nds) => updateNodeAndPropagate(nds, edges, id, 'height', Math.round(nextValue)));
     }, [getEdges, id, setNodes]);
-
-    const onToggleFields = useCallback(() => {
-        setNodes((nds) => nds.map((node) => (
-            node.id === id
-                ? {
-                    ...node,
-                    data: {
-                        ...node.data,
-                        collapsed: fieldsExpanded,
-                    },
-                }
-                : node
-        )));
-    }, [fieldsExpanded, id, setNodes]);
 
     return (
         <div
@@ -108,22 +93,6 @@ const PageNode = ({ id, data }: NodeProps<Node<PageNodeData, typeof NODE_TYPES.P
                         />
                     </div>
                 </div>
-            </div>
-            <div
-                className="nodrag"
-                onClick={onToggleFields}
-                style={{
-                    marginTop: '6px',
-                    color: '#fff',
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                }}
-            >
-                <span>{fieldsExpanded ? '▼' : '▶'}</span>
-                <b>{data.label + "-" + id}</b>
             </div>
             {fieldsExpanded && (
                 <>
