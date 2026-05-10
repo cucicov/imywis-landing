@@ -1,0 +1,22 @@
+.cumulative-center-slider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.cumulative-center-slider__input {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.cumulative-center-slider__value {
+  display: inline-block;
+  min-width: 28px;
+  font-size: 11px;
+  line-height: 1;
+  text-align: right;
+  color: #111;
+}
